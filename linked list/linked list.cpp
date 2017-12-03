@@ -60,6 +60,18 @@ void traverse()
             }
     }
 }
+node * reverseLinkedlist()
+{
+    struct node *t1=NULL,*t2=NULL;
+    while(start!=NULL)
+    {
+        t2 = start->link;
+        start->next = t1;
+        t1=start;
+        start = t2;
+    }
+    return t1;
+}
 main()
 {
 int ch;
