@@ -3,91 +3,169 @@
 #include<stdlib.h>
 #include<iostream>
 using namespace std;
+//insertion  delete viewlist getfirst getlast search
 struct node
 {
     int info;
-    node *pre, *next;
+    struct node *pre, *next;
 };
-struct node *start = NULL;
-void insertfirstnode(int info)
+void insertStart(struct node **s,int data)
 {
     struct node *p;
     p = (struct node *)malloc(sizeof(struct node));
-    p->info = info;
-    p->next = NULL;
     p->pre = NULL;
-    if(start == NULL)
-    {
-        start = p;
-    }
-    else
-    {
-       p->next = start;
-       start = p;
-    }
-}
-void deletefirstnode()
-{
-    struct node *t;
-    if (start ==NULL)
-        printf("list is empty");
-    else
-    {
-        t = start;
-        start = start->next;
-        start->pre = NULL;
-        free(t);
+    p->info = data;
+    p->next = *s;
+    *s = p;
 
-    }
 }
-void viewlist()
+void insertLast(struct node **s,int data)
 {
-    struct node *t;
-    if (start == NULL)
-        printf("list is empty");
+    struct node *p,*t;
+    p =(struct node *)malloc(sizeof(struct node));
+    if(*s == NULL)
+    {
+        p->pre = NULL;
+        p->info = data;
+        p->next = NULL;
+        *s = p;
+    }
     else
     {
-        t = start;
+        p->info = data;
+        p->next = NULL;
+        t = *s;
         while(t->next!=NULL)
         {
-            printf("%d ",t->info);
-            t = t->next;
+            t=t->next;
         }
+        p->pre = t;
+        t->next = p;
     }
 }
-void  menu()
+void insertAfter(struct node **s,struct node *ptr,int data)
 {
-    int x;
-    printf("\n1: insert first node\n2: delete first node\n3: view list\n4: exit\n");
-    cin>>x;
-    switch(x)
+    if(ptr == NULL)
+        printf("not possible");
+    else
     {
-    case 1:
-        printf("enter the value you want to insert = ");
-        int n;
-        cin>>n;
-        insertfirstnode(n);
-        break;
-    case 2:
-        deletefirstnode();
-        break;
-    case 3:
-        viewlist();
-        break;
-    case 4:
-        exit(1);
-    default :
-        printf("invalid input");
+            struct node *p;
+            p = (struct node *)malloc(sizeof(struct node));
+            p->info = data;
+            p->pre = ptr;
+            p->next = ptr->next;
+            if(ptr->next!=NULL)
+                ptr->next->pre = p;
+            ptr->next = p;
     }
 }
-main()
+struct node *Find(struct node **s, int value)
 {
-    while(1)
+    struct node *t;
+    if(*s == NULL)
+    {  return NULL; }
+    else
     {
-        menu();
-    }
-}
 
+        t = *s;
+        while(t!=NULL)
+            {
+                if(t->info == value)
+                    return t;
+                t = t->next;
+            }
+        return NULL;
+    }
+
+}
+int deleteFirst(struct node **s)
+{
+    if(*s == NULL)
+        return 0;
+    struct node *t;
+    t = *s;
+    *s = (*s)->next;
+    (*s)->pre = NULL;
+    free(t);
+    return 1;
+
+}
+int deleteLast(struct node **s)
+{
+    if(*s == NULL)
+        return 0;
+    struct node *t;
+    t = *s;
+    while(t->next!=NULL)
+        t=t->next;
+    if((*s)->next == NULL)
+         *s = NULL;
+    else
+    t->pre->next = NULL;
+    free(t);
+    return 1;
+}
+void deleteIntermediate(struct node **s,struct node *ptr)
+{
+    if(ptr == NULL||*s == NULL)
+        printf("not possible");
+    struct node *t;
+
+    if (ptr == *s)
+        {
+            t = *s;
+            *s = NULL;
+            free(t);
+        }
+    else
+    {
+            if(ptr->next == NULL)
+            {
+                ptr->pre->next = NULL;
+                free(ptr);
+            }
+            else
+            {
+                ptr->pre->next = ptr->next;
+                ptr->next->pre = ptr->pre;
+                free(ptr);
+            }
+    }
+}
+void viewList(struct node **s)
+{
+    struct node *t;
+    t = *s;
+    if(t == NULL)
+        printf("list is empty");
+    else{
+    while(t=NULL)
+    {
+        printf("%d ",t->info);
+        t = t->next;
+    }
+    }
+}
+int getFirst(struct node **s)
+{
+    if(*s == NULL)
+        return -1;
+    else
+        return (*s)->info;
+}
+int getLast(struct node **s)
+{
+    struct node *t;
+    t = *s;
+    if(t == NULL)
+        return -1;
+    else
+    {
+        while(t->next!=NULL)
+            t = t->next;
+        return t->info;
+    }
+}
 
 
 
